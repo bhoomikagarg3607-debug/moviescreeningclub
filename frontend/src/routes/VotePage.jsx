@@ -39,7 +39,7 @@ const MovieList = () => {
 
   const handleVoteClick = async (movieId, voteType) => {
     try {
-      const response = await api.post(`/vote`, {
+      const response = await (`/vote`, {
         movieId,
         voteType,
         userEmail: user?.email
@@ -55,7 +55,7 @@ const MovieList = () => {
 
   const handleAddMovie = async () => {
     try {
-      const response = await api.post(`/vote/add`, newMovieData)
+      const response = await (`/vote/add`, newMovieData)
       if (response.status !== 201) {
         throw new Error('Failed to add movie')
       }

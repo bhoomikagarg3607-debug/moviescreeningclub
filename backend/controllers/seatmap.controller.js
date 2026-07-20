@@ -29,6 +29,7 @@ const seatOccupancy = async (req, res) => {
 
       resSeats.push({
         occupied: !!qr,
+        type: qr?.txnId === "BLOCK" ? "blocked" : "booked",
         name: seat,
         sec:
           (parseInt(seat.slice(1)) > row.center + row.right
@@ -92,6 +93,8 @@ const seatAssign = async (req, res) => {
     if (!seatMap) {
       return res.status(400).json({ error: 'Invalid showtime' })
     }
+
+
 
     const movie = await Movie.findOne({ 'showtimes._id': showtimeId })
     if (!movie || movie.past) {
@@ -310,4 +313,80 @@ const seatAssign = async (req, res) => {
   }
 }
 
-module.exports = { seatOccupancy, seatAssign, freepasses, getMails }
+const blockSeat = async (req, res) => {
+  try {
+    const { showtimeId } = req.params
+    const { seats, name } = req.body   // 👈 custom name
+
+    // 🔐 Check admin (VERY IMPORTANT)
+    if (getUserType(req.user.email) !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' })
+    }
+
+    const seatMap = await SeatMap.findOne({ showtimeId })
+    if (!seatMap) {
+      return res.status(400).json({ error: 'Invalid showtime' })
+    }
+
+    const movie = await Movie.findOne({ 'showtimes._id': showtimeId })
+    const showtime = movie.showtimes.id(showtimeId)
+
+    let results = []
+
+    for (let seat of seats) {
+      if (seatMap.seats.get(seat)) {
+        results.push({ seat, message: 'Already booked' })
+        continue
+      }
+
+      const qr = new QR({
+        user: req.user.userId,
+        seat: seat,
+        showtime: showtimeId,
+        txnId: "BLOCK",          // ✅ IMPORTANT
+        name: name,              // ✅ CUSTOM NAME (add in schema if not present)
+        free: false,
+        code: '',
+        expirationDate: new Date(
+          new Date(showtime.date).getTime() + 3 * 60 * 60 * 1000
+        )
+      })
+
+      const code = jwt.sign(
+        {
+          userId: req.user.userId,
+          qrId: qr._id,
+          seat: seat,
+          hash: crypto.randomBytes(16).toString('hex')
+        },
+        process.env.JWT_SECRET_QR || 'secret'
+      )
+
+      qr.code = code
+
+      const updated = await SeatMap.findOneAndUpdate(
+        {
+          _id: seatMap._id,
+          [`seats.${seat}`]: null
+        },
+        { $set: { [`seats.${seat}`]: qr._id } }
+      )
+
+      if (updated) {
+        await qr.save()
+        results.push({ seat, message: 'Blocked', qrId: qr._id })
+      } else {
+        results.push({ seat, message: 'Error blocking' })
+      }
+    }
+
+    return res.json(results)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+
+
+module.exports = { seatOccupancy, seatAssign, freepasses, getMails, blockSeat }

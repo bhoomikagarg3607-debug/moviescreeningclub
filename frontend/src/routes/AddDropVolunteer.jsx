@@ -93,7 +93,7 @@ const AddDropVolunteer = () => {
 
   const handleSubmit = async (email, userType) => {
     try {
-      const response = await api.post(`/user/updateUserType`, {
+      const response = await (`/user/updateUserType`, {
         email,
         userType
       })

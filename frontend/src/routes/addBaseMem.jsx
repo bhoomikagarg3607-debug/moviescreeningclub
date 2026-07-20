@@ -14,7 +14,7 @@ const AddBaseMem = () => {
     setError(null);
     setSuccess(null);
     try {
-      await api.post('/membership/assign-base-membership');
+      await ('/membership/assign-base-membership');
       setSuccess('Base membership assigned successfully to all core team users.');
     } catch (err) {
       setError('Error assigning base membership.');

@@ -1,9 +1,13 @@
 import { rows } from '@/utils/seats'
+const [isBlockMode, setIsBlockMode] = useState(false)
+const [customName, setCustomName] = useState("")
 const Seat = ({ seat, selected, onclick }) => {
   return (
     <button
       className={`bg-white-50 font-roboto m-0.5 w-8 cursor-pointer border border-gray-400 px-1 py-1 text-center text-[8px] ${
         selected
+        ? 'bg-green-600'
+        : seat.type === 'blocked'
           ? 'bg-green-600 '
           : seat.occupied
             ? 'bg-gray-300 text-red-400'
@@ -203,6 +207,51 @@ const Seats = ({ seats, selectedSeats, setSelectedSeats, maxAllowed }) => {
       </div>
     </div>
   )
+}
+
+{isLocalAdmin && (
+  <label>
+    <input
+      type="checkbox"
+      checked={isBlockMode}
+      onChange={() => setIsBlockMode(!isBlockMode)}
+    />
+    Block Seat
+  </label>
+)}
+
+{isBlockMode && (
+  <input
+    type="text"
+    placeholder="Enter name"
+    value={customName}
+    onChange={(e) => setCustomName(e.target.value)}
+  />
+)}
+
+<button onClick={handleBooking}>
+  Confirm Booking
+</button>
+
+const handleBooking = async () => {
+  try {
+    if (isBlockMode) {
+      // 🔴 BLOCK API
+      await (`/ticket/block/${showtimeId}`, {
+        seats: selectedSeats,
+        name: customName
+      })
+      alert("Seats blocked")
+    } else {
+      // 🟢 NORMAL BOOKING
+      await (`/seat/assign/${showtimeId}`, {
+        seats: selectedSeats
+      })
+      alert("Seats booked")
+    }
+  } catch (err) {
+    alert(err.response?.data?.error || "Error")
+  }
 }
 
 export default Seats

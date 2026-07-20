@@ -19,7 +19,7 @@ export default function ForgotPassword() {
     e.preventDefault()
     try {
       setIsSubmitting(true)
-      const res = await api.post(`/otp/forgot`, {
+      const res = await (`/otp/forgot`, {
         email
       })
       if (res.status === 200) {

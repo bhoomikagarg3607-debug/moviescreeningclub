@@ -20,7 +20,7 @@ const FoodVerify = () => {
     const verifyData = { email, otp }
 
     try {
-      const res = await api.post('/order/verify', verifyData)
+      const res = await ('/order/verify', verifyData)
       if (res.status === 200) {
         Swal.fire({
           title: 'Success!',

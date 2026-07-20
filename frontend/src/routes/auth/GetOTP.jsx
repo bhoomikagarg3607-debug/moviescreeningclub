@@ -23,7 +23,7 @@ export default function GetOTP() {
     }
     setIsSubmitting(true)
     try {
-      const res = await api.post(`/otp/user`, {
+      const res = await (`/otp/user`, {
         email
       })
       if (res.status === 200) {

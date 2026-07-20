@@ -31,7 +31,7 @@ const Movie = () => {
     try {
       const res = await api.get(`/seatmap/${showtimeId}`)
       setSeats(res.data)
-      const availableseats = res.data.filter((seat) => !seat.occupied).length
+      const availableseats = res.data.filter((seat) => seat.type !== 'blocked' && !seat.occupied).length
       setAvailableSeats(availableseats)
     } catch (error) {
       setSeats(null)

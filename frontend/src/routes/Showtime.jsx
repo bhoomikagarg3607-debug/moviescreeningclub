@@ -41,7 +41,7 @@ const Showtime = () => {
       return
     }
     try {
-      await api.post(`/movie/${movieId}/showtimes`, {
+      await (`/movie/${movieId}/showtimes`, {
         date: new Date(newShowtime.date + 'T' + newShowtime.time).toISOString()
       })
       await fetchMovie()
@@ -149,5 +149,6 @@ const Showtime = () => {
     </div>
   )
 }
+
 
 export default Showtime

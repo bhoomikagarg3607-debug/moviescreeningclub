@@ -90,7 +90,7 @@ export const Scanner = () => {
 
   const sendApiRequest = async (result,reprinted=false) => {
     try {
-      const response = await api.post(`/QR/check`, {
+      const response = await (`/QR/check`, {
         qrData: result
       })
       if (response.status !== 200) {

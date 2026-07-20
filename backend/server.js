@@ -17,9 +17,11 @@ const PORT = process.env.PORT ?? 8000
 const app = express()
 const https = createServer(app)
 
+const mongoUri = process.env.MongoDB || 'mongodb://127.0.0.1:27017/moviescreeningclub'
+
 mongoose
-  .connect(`${process.env.MongoDB}`)
-  .then(() => console.log('Connected to MongoDB'))
+  .connect(mongoUri)
+  .then(() => console.log('Connected to MongoDB:', mongoUri))
   .catch((error) => console.error('MongoDB connection error:', error))
 
 const corsOptions = {

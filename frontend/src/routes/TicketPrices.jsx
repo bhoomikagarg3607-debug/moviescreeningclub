@@ -63,7 +63,7 @@ const TicketPrices = () => {
       setEditing(null)
       setEditedData({})
 
-      await api.post(`/membership/prices`, {
+      await (`/membership/prices`, {
         name: editing.membership,
         price: updatedPrices.find((m) => m.name === editing.membership).price,
         validity: updatedPrices.find((m) => m.name === editing.membership)
@@ -82,7 +82,7 @@ const TicketPrices = () => {
 
   const handleCreateMembership = async () => {
     try {
-      const response = await api.post('/membership/create', newMembership)
+      const response = await ('/membership/create', newMembership)
       setPrices([...prices, response.data])
       setShowCreateForm(false)
       setNewMembership({

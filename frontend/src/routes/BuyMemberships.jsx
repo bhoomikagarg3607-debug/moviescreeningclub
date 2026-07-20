@@ -30,7 +30,7 @@ const MembershipCard = ({ mem, loading, setLoading }) => {
       const memtype = mem.name.toLowerCase().includes('film fest')
         ? 'filmFest'
         : mem.name
-      const res = await api.post('/membership/request', {
+      const res = await ('/membership/request', {
         memtype
       })
       setLoading(false)

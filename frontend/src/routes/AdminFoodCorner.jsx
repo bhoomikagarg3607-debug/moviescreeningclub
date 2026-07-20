@@ -63,7 +63,7 @@ const AdminFood = () => {
       }
     } else {
       try {
-        const response = await api.post('/food', newFoodItem)
+        const response = await ('/food', newFoodItem)
         if (!response.ok) {
           Swal.fire({
             title: 'Error',

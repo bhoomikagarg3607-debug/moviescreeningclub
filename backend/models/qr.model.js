@@ -43,6 +43,10 @@ const QRSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  name: {          // ✅ CUSTOM NAME FIELD
+    type: String,
+    required: true
+  },        
   deleted: {
     type: Boolean,
     default: false

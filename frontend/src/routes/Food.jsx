@@ -103,7 +103,7 @@ const OrderPage = () => {
           items: selectedItems
         }
         try {
-          const response = await api.post('/order', orderData)
+          const response = await ('/order', orderData)
           console.log(orderData)
           if (response.status !== 200) {
             Swal.fire({
